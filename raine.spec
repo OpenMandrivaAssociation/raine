@@ -48,8 +48,8 @@ Patch0:		raine-0.51.12-png15.patch
 # this generates the list of artwork files for the install step
 %define artwork_files %(echo %{artwork_sources} | awk 'BEGIN { RS=" "; files="" }; { files=files" %{_sourcedir}/"$1".zip"}; END { print files };')
 
+BuildRequires:	pkgconfig(xrender) >= 0.9.6
 BuildRequires:	SDL-devel
-#BuildRequires:	SDL_mixer-devel
 BuildRequires:	SDL_sound-devel
 BuildRequires:	SDL_image-devel
 BuildRequires:	SDL_ttf-devel
