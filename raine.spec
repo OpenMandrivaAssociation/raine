@@ -1,16 +1,15 @@
-Name:			raine
-Version:		0.51.11
-Release:		%mkrel 1
-
 %define build_optimization 0
 %{?_with_optimization: %{expand: %%global build_optimization 1}}
 
+Name:		raine
+Version:	0.51.12
+Release:	%mkrel 1
 Summary:	An arcade emulator
 License:	Freeware
 #i.e: "Raine license", open-source freeware, distributable
 Group:		Emulators
 URL:		http://rainemu.swishparty.co.uk/
-Source0:	http://rainemu.swishparty.co.uk/htmlarchive/%{name}s-%{version}.tar.bz2
+Source0:	http://rainemu.swishparty.co.uk/htmlarchive/%{name}-%{version}.tar.bz2
 Source1:	http://rainemu.swishparty.co.uk/html/archive/icons.zip
 Source2:	http://rainemu.swishparty.co.uk/html/archive/rainedocs.zip
 Source3:	http://rainemu.swishparty.co.uk/html/archive/raine.pdf
@@ -62,9 +61,8 @@ BuildRequires:	p7zip
 #for the converter
 BuildRequires:	allegro-devel
 BuildRequires:	desktop-file-utils
-BuildRoot:	%{_tmppath}/%{name}-%{version}
 
-ExclusiveArch:	%ix86
+ExclusiveArch:	%{ix86}
 
 Obsoletes:	raine-snapshots
 
@@ -126,10 +124,10 @@ cp -p %{_sourcedir}/raine.pdf %{_sourcedir}/shots.pl .
  rm -f cpuinfo
 %endif
 export OSTYPE
-make %{?_smp_mflags}
+%make
 make converter
 #neoraine
-make %{?_smp_mflags} NEO=1
+%make NEO=1
 
 %install
 rm -rf %{buildroot}
@@ -154,7 +152,6 @@ desktop-file-install --vendor="" \
 
 #artwork
 mkdir -p %{buildroot}%{_gamesdatadir}/raine/artwork
-#install -d -m 755 %{buildroot}%{_gamesdatadir}/raine/artwork
 install -m 644 %{artwork_files} %{buildroot}%{_gamesdatadir}/raine/artwork
 
 #emudx
@@ -163,6 +160,9 @@ install -m 644 %{emudx_files} %{buildroot}%{_gamesdatadir}/raine/emudx
 
 #neoraine
 %makeinstall_std NEO=1
+
+%clean
+rm -rf %{buildroot}
 
 %files
 %defattr(0644,root,root,0755)
@@ -197,11 +197,6 @@ install -m 644 %{emudx_files} %{buildroot}%{_gamesdatadir}/raine/emudx
 %doc raine.txt
 %attr(0755,root,root) %{_gamesbindir}/neoraine
 %{_gamesdatadir}/raine/neocheats.cfg
-#{_gamesdatadir}/raine/scripts/neocd
 %{_datadir}/pixmaps/neoraine.png
 %{_datadir}/applications/neoraine.desktop
-
-%clean
-rm -rf %{buildroot}
-
 
