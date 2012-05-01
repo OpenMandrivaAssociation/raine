@@ -21,6 +21,7 @@ Source7:	hiscore.7z
 # free rom
 Source10:	http://www.rainemu.com/html/archive/f2demo.zip
 Source11:	http://www.rainemu.com/html/archive/f3demo.zip
+Patch0:		raine-0.51.12-png15.patch
 
 # emudx sources from : http://www.rainemu.com/html/archive/emudx/
 # to add an emudx file :
@@ -114,6 +115,7 @@ perl -pi -e "s|NEO=1|#NEO=1|g" makefile
 cp -p %{_sourcedir}/raine.pdf %{_sourcedir}/shots.pl .
 7za x %{_sourcedir}/mamehistory137.7z
 7za x -y %{_sourcedir}/hiscore.7z
+%patch0 -p1
 
 %build
 %if !%build_optimization
