@@ -2,8 +2,8 @@
 %{?_with_optimization: %{expand: %%global build_optimization 1}}
 
 Name:		raine
-Version:	0.51.12
-Release:	%mkrel 1
+Version:	0.60.0
+Release:	1
 Summary:	An arcade emulator
 License:	Freeware
 #i.e: "Raine license", open-source freeware, distributable
@@ -15,13 +15,13 @@ Source2:	http://rainemu.swishparty.co.uk/html/archive/rainedocs.zip
 Source3:	http://rainemu.swishparty.co.uk/html/archive/raine.pdf
 # From 0.50.6
 Source4:	shots.pl
-Source5:	http://www.arcade-history.com/dats/mamehistory137.7z
 Source6:	raine-neocd-cheats.tar.gz
 Source7:	hiscore.7z
 # free rom
 Source10:	http://www.rainemu.com/html/archive/f2demo.zip
 Source11:	http://www.rainemu.com/html/archive/f3demo.zip
-Patch0:		raine-0.51.12-png15.patch
+
+Source20:	%{name}.rpmlintrc
 
 # emudx sources from : http://www.rainemu.com/html/archive/emudx/
 # to add an emudx file :
@@ -48,8 +48,8 @@ Patch0:		raine-0.51.12-png15.patch
 # this generates the list of artwork files for the install step
 %define artwork_files %(echo %{artwork_sources} | awk 'BEGIN { RS=" "; files="" }; { files=files" %{_sourcedir}/"$1".zip"}; END { print files };')
 
-BuildRequires:	pkgconfig(xrender) >= 0.9.6
 BuildRequires:	SDL-devel
+#BuildRequires:	SDL_mixer-devel
 BuildRequires:	SDL_sound-devel
 BuildRequires:	SDL_image-devel
 BuildRequires:	SDL_ttf-devel
@@ -64,8 +64,6 @@ BuildRequires:	allegro-devel
 BuildRequires:	desktop-file-utils
 
 ExclusiveArch:	%{ix86}
-
-Obsoletes:	raine-snapshots
 
 %description
 Raine is an emulator, it emulates some M68000 and M68020 arcade games
@@ -84,8 +82,7 @@ black borders in vertical games.
 Summary:	Files to enhance emulation of old arcade games in raine
 Group:		Emulators
 Requires:	raine
-Obsoletes:	raine-emudx
-Provides:	raine-emudx
+%rename		raine-emudx
 
 %description emudx2
 Files to enhance emulation of old arcade games.
@@ -113,9 +110,7 @@ http://www.rainemu.com/html/download/neoraine.html
 %setup -q -n raine-%{version} -T -D -a 1 -a 2 -a 6
 perl -pi -e "s|NEO=1|#NEO=1|g" makefile
 cp -p %{_sourcedir}/raine.pdf %{_sourcedir}/shots.pl .
-7za x %{_sourcedir}/mamehistory137.7z
 7za x -y %{_sourcedir}/hiscore.7z
-%patch0 -p1
 
 %build
 %if !%build_optimization
@@ -163,9 +158,6 @@ install -m 644 %{emudx_files} %{buildroot}%{_gamesdatadir}/raine/emudx
 #neoraine
 %makeinstall_std NEO=1
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %defattr(0644,root,root,0755)
 %doc raine.txt raine.pdf raine.lyx shots.pl
@@ -201,4 +193,5 @@ rm -rf %{buildroot}
 %{_gamesdatadir}/raine/neocheats.cfg
 %{_datadir}/pixmaps/neoraine.png
 %{_datadir}/applications/neoraine.desktop
+
 

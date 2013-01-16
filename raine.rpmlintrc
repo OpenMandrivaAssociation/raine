@@ -1,0 +1,2 @@
+# This way it works really better in this package
+addFilter("E: use-of-RPM_SOURCE_DIR")
