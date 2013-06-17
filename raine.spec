@@ -1,8 +1,12 @@
+# Debug is not properly generated and we don't need it anyway here
+%define _enable_debug_packages %{nil}
+%define debug_package %{nil}
+
 %define build_optimization 0
 %{?_with_optimization: %{expand: %%global build_optimization 1}}
 
 Name:		raine
-Version:	0.60.0
+Version:	0.61.2
 Release:	1
 Summary:	An arcade emulator
 License:	Freeware
@@ -48,20 +52,22 @@ Source20:	%{name}.rpmlintrc
 # this generates the list of artwork files for the install step
 %define artwork_files %(echo %{artwork_sources} | awk 'BEGIN { RS=" "; files="" }; { files=files" %{_sourcedir}/"$1".zip"}; END { print files };')
 
-BuildRequires:	SDL-devel
-#BuildRequires:	SDL_mixer-devel
-BuildRequires:	SDL_sound-devel
-BuildRequires:	SDL_image-devel
-BuildRequires:	SDL_ttf-devel
-BuildRequires:	png-devel
-BuildRequires:	muparser-devel
-BuildRequires:	ElectricFence-devel
+BuildRequires:	desktop-file-utils
 BuildRequires:	nasm
 BuildRequires:	perl
 BuildRequires:	p7zip
-#for the converter
-BuildRequires:	allegro-devel
-BuildRequires:	desktop-file-utils
+# for the converter
+BuildRequires:	pkgconfig(allegro)
+# the rest
+BuildRequires:	pkgconfig(gl)
+BuildRequires:	pkgconfig(glu)
+BuildRequires:	pkgconfig(libpng)
+BuildRequires:	pkgconfig(muparser)
+BuildRequires:	pkgconfig(sdl)
+BuildRequires:	pkgconfig(SDL_image)
+BuildRequires:	pkgconfig(SDL_ttf)
+BuildRequires:	ElectricFence-devel
+BuildRequires:	SDL_sound-devel
 
 ExclusiveArch:	%{ix86}
 
@@ -94,7 +100,7 @@ It requires the roms to be enhanced and the raine emulator.
 Summary:	NeoRaine - raine version with support for NeoGeo CD
 Group:		Emulators
 Requires:	raine
-Provides:	neoraine 
+Provides:	neoraine
 
 %description neocd
 NeoRaine is a modified raine version with support for NeoGeo CD.
@@ -170,6 +176,7 @@ install -m 644 %{emudx_files} %{buildroot}%{_gamesdatadir}/raine/emudx
 %{_gamesdatadir}/raine/bitmaps
 %{_gamesdatadir}/raine/fonts
 %{_gamesdatadir}/raine/roms
+%{_gamesdatadir}/raine/shaders
 %{_iconsdir}/raine.png
 %{_miconsdir}/raine.png
 %{_liconsdir}/raine.png
