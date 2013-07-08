@@ -5,14 +5,14 @@
 %define build_optimization 0
 %{?_with_optimization: %{expand: %%global build_optimization 1}}
 
-Name:		raine
-Version:	0.61.2
-Release:	1
 Summary:	An arcade emulator
+Name:		raine
+Version:	0.62.3
+Release:	1
 License:	Freeware
 #i.e: "Raine license", open-source freeware, distributable
 Group:		Emulators
-URL:		http://rainemu.swishparty.co.uk/
+Url:		http://rainemu.swishparty.co.uk/
 Source0:	http://rainemu.swishparty.co.uk/htmlarchive/%{name}-%{version}.tar.bz2
 Source1:	http://rainemu.swishparty.co.uk/html/archive/icons.zip
 Source2:	http://rainemu.swishparty.co.uk/html/archive/rainedocs.zip
@@ -21,10 +21,6 @@ Source3:	http://rainemu.swishparty.co.uk/html/archive/raine.pdf
 Source4:	shots.pl
 Source6:	raine-neocd-cheats.tar.gz
 Source7:	hiscore.7z
-# free rom
-Source10:	http://www.rainemu.com/html/archive/f2demo.zip
-Source11:	http://www.rainemu.com/html/archive/f3demo.zip
-
 Source20:	%{name}.rpmlintrc
 
 # emudx sources from : http://www.rainemu.com/html/archive/emudx/
@@ -54,7 +50,6 @@ Source20:	%{name}.rpmlintrc
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	nasm
-BuildRequires:	perl
 BuildRequires:	p7zip
 # for the converter
 BuildRequires:	pkgconfig(allegro)
@@ -68,12 +63,19 @@ BuildRequires:	pkgconfig(SDL_image)
 BuildRequires:	pkgconfig(SDL_ttf)
 BuildRequires:	ElectricFence-devel
 BuildRequires:	SDL_sound-devel
-
 ExclusiveArch:	%{ix86}
+Obsoletes:	%{name}-neocd < 0.62.0
+Provides:	neoraine = %{EVRD}
 
 %description
 Raine is an emulator, it emulates some M68000 and M68020 arcade games
 and is mainly focused on Taito and Jaleco games hardware.
+
+Since 0.62 Raine was merged with NeoRaine into one emulator.
+
+To play NeoGeo CD games you need neocd.bin (or neocd.zip), which is the
+neocd bios to be in the (neo)raine's data directory:
+%{_gamesdatadir}/raine
 
 %package artwork
 Summary:	Artwork for Raine
@@ -88,7 +90,6 @@ black borders in vertical games.
 Summary:	Files to enhance emulation of old arcade games in raine
 Group:		Emulators
 Requires:	raine
-%rename		raine-emudx
 
 %description emudx2
 Files to enhance emulation of old arcade games.
@@ -96,73 +97,55 @@ Donkey Kong, Frogger, Galaxian, Pac-Man and Ms. Pac-Man are suported.
 
 It requires the roms to be enhanced and the raine emulator.
 
-%package neocd
-Summary:	NeoRaine - raine version with support for NeoGeo CD
-Group:		Emulators
-Requires:	raine
-Provides:	neoraine
-
-%description neocd
-NeoRaine is a modified raine version with support for NeoGeo CD.
-You'll need neocd.bin (or neocd.zip), which is the neocd bios to be in the 
-(neo)raine's data directory : %{_gamesdatadir}/raine
-So it depends on raine for now.
-
-You may find other interesting information on 
-http://www.rainemu.com/html/download/neoraine.html
-
 %prep
 %setup -q
-%setup -q -n raine-%{version} -T -D -a 1 -a 2 -a 6
-perl -pi -e "s|NEO=1|#NEO=1|g" makefile
-cp -p %{_sourcedir}/raine.pdf %{_sourcedir}/shots.pl .
-7za x -y %{_sourcedir}/hiscore.7z
+%setup -q -T -D -a 1 -a 2 -a 6
+cp -p %{SOURCE3} %{SOURCE4} .
+7za x -y %{SOURCE7}
 
 %build
-%if !%build_optimization
+%if !%{build_optimization}
  rm -f cpuinfo
  echo "_MARCH=-march=i586 -mtune=pentiumpro" > cpuinfo
- echo "CPU=pentiumpro" >> cpuinfo 
+ echo "CPU=pentiumpro" >> cpuinfo
 %else
  rm -f cpuinfo
 %endif
 export OSTYPE
 %make
 make converter
-#neoraine
-%make NEO=1
 
 %install
-rm -rf %{buildroot}
 %makeinstall_std VERBOSE=1
 
-#savegame converter
+# savegame converter
 install -D -m 755 converter %{buildroot}%{_gamesbindir}/raine-savegame-converter
 
-#history
+# history
 install -D -m 644 history.dat %{buildroot}%{_gamesdatadir}/raine/history.dat
 
-#icons
+# icons
 install -D -m 644 Raine48x48.png %{buildroot}%{_liconsdir}/raine.png
 install -D -m 644 Raine32X32.png %{buildroot}%{_iconsdir}/raine.png
 install -D -m 644 Raine16X16.png %{buildroot}%{_miconsdir}/raine.png
 
-#menu
+# menu
 desktop-file-install --vendor="" \
   --add-category="X-MandrivaLinux-MoreApplications-Emulators" \
   --dir %{buildroot}%{_datadir}/applications/ \
   %{buildroot}%{_datadir}/applications/*
 
-#artwork
+# artwork
 mkdir -p %{buildroot}%{_gamesdatadir}/raine/artwork
 install -m 644 %{artwork_files} %{buildroot}%{_gamesdatadir}/raine/artwork
 
-#emudx
+# emudx
 install -d -m 755 %{buildroot}%{_gamesdatadir}/raine/emudx
 install -m 644 %{emudx_files} %{buildroot}%{_gamesdatadir}/raine/emudx
 
-#neoraine
-%makeinstall_std NEO=1
+# remove no longer needed but still installed neoraine files
+rm -f %{buildroot}%{_datadir}/pixmaps/neoraine.png
+rm -f %{buildroot}%{_datadir}/applications/neoraine.desktop
 
 %files
 %defattr(0644,root,root,0755)
@@ -176,12 +159,15 @@ install -m 644 %{emudx_files} %{buildroot}%{_gamesdatadir}/raine/emudx
 %{_gamesdatadir}/raine/bitmaps
 %{_gamesdatadir}/raine/fonts
 %{_gamesdatadir}/raine/roms
+%{_gamesdatadir}/raine/scripts
 %{_gamesdatadir}/raine/shaders
 %{_iconsdir}/raine.png
 %{_miconsdir}/raine.png
 %{_liconsdir}/raine.png
 %{_datadir}/pixmaps/raine.png
 %{_datadir}/applications/raine.desktop
+# ex-neocd files
+%{_gamesdatadir}/raine/neocheats.cfg
 
 %files artwork
 %defattr(0644,root,root,0755)
@@ -192,13 +178,4 @@ install -m 644 %{emudx_files} %{buildroot}%{_gamesdatadir}/raine/emudx
 %defattr(0644,root,root,0755)
 %doc raine.txt
 %{_gamesdatadir}/raine/emudx
-
-%files neocd
-%defattr(0644,root,root,0755)
-%doc raine.txt
-%attr(0755,root,root) %{_gamesbindir}/neoraine
-%{_gamesdatadir}/raine/neocheats.cfg
-%{_datadir}/pixmaps/neoraine.png
-%{_datadir}/applications/neoraine.desktop
-
 
