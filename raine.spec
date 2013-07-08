@@ -61,7 +61,6 @@ BuildRequires:	pkgconfig(muparser)
 BuildRequires:	pkgconfig(sdl)
 BuildRequires:	pkgconfig(SDL_image)
 BuildRequires:	pkgconfig(SDL_ttf)
-BuildRequires:	ElectricFence-devel
 BuildRequires:	SDL_sound-devel
 ExclusiveArch:	%{ix86}
 Obsoletes:	%{name}-neocd < 0.62.0
