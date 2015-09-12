@@ -8,7 +8,7 @@
 Summary:	An arcade emulator
 Name:		raine
 Version:	0.62.7
-Release:	2
+Release:	3
 License:	Freeware
 #i.e: "Raine license", open-source freeware, distributable
 Group:		Emulators
