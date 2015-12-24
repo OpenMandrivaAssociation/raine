@@ -7,32 +7,19 @@
 
 Summary:	An arcade emulator
 Name:		raine
-Version:	0.62.7
-Release:	3
+Version:	0.64.10
+Release:	1
 License:	Freeware
 #i.e: "Raine license", open-source freeware, distributable
 Group:		Emulators
-Url:		http://rainemu.swishparty.co.uk/
-Source0:	http://rainemu.swishparty.co.uk/htmlarchive/%{name}-%{version}.tar.bz2
-Source1:	http://rainemu.swishparty.co.uk/html/archive/icons.zip
-Source2:	http://rainemu.swishparty.co.uk/html/archive/rainedocs.zip
-Source3:	http://rainemu.swishparty.co.uk/html/archive/raine.pdf
-# From 0.50.6
-Source4:	shots.pl
+Url:		http://raine.1emulation.com/
+Source0:	http://raine.1emulation.com/htmlarchive/%{name}-%{version}.tar.gz
+Source1:	http://raine.1emulation.com/html/archive/icons.zip
+Source2:	http://raine.1emulation.com/html/archive/rainedocs.zip
 Source6:	raine-neocd-cheats.tar.gz
 Source7:	hiscore.7z
 Source20:	%{name}.rpmlintrc
-
-# emudx sources from : http://www.rainemu.com/html/archive/emudx/
-# to add an emudx file :
-# add its basename to the emudx_sources list below 
-%define emudx_sources "dkongg dkongm froggerg froggerm galdxg galdxm\
- mspacmang pacmang"
-#mspacmanm pacmanm
-# this generates Source1xx tags (400 max)
-%(echo %{emudx_sources} | awk 'BEGIN { RS=" "; n=0 }; { print "Source"100+n":\t"$1".dx2"; n++ };')
-# this generates the list of emudx files for the install step
-%define emudx_files %(echo %{emudx_sources} | awk 'BEGIN { RS=" "; files="" }; { files=files" %{_sourcedir}/"$1".dx2"}; END { print files };')
+Patch1:		raine-0.63.12-makefile-libs.patch
 
 # artwork sources from : http://www.rainemu.com/html/download/extras.html
 # to add an artwork archive :
@@ -85,21 +72,11 @@ Requires:	raine
 Artwork for Raine. These files are pictures used mainly to fill the ugly 
 black borders in vertical games.
 
-%package emudx2
-Summary:	Files to enhance emulation of old arcade games in raine
-Group:		Emulators
-Requires:	raine
-
-%description emudx2
-Files to enhance emulation of old arcade games.
-Donkey Kong, Frogger, Galaxian, Pac-Man and Ms. Pac-Man are suported.
-
-It requires the roms to be enhanced and the raine emulator.
-
 %prep
 %setup -q
+%apply_patches
+
 %setup -q -T -D -a 1 -a 2 -a 6
-cp -p %{SOURCE3} %{SOURCE4} .
 7za x -y %{SOURCE7}
 
 %build
@@ -148,7 +125,7 @@ rm -f %{buildroot}%{_datadir}/applications/neoraine.desktop
 
 %files
 %defattr(0644,root,root,0755)
-%doc raine.txt raine.pdf raine.lyx shots.pl
+%doc raine.txt raine.lyx
 %attr(0755,root,root) %{_gamesbindir}/raine
 %attr(0755,root,root) %{_gamesbindir}/raine-savegame-converter
 %dir %{_gamesdatadir}/raine
@@ -172,9 +149,4 @@ rm -f %{buildroot}%{_datadir}/applications/neoraine.desktop
 %defattr(0644,root,root,0755)
 %doc raine.txt
 %{_gamesdatadir}/raine/artwork
-
-%files emudx2
-%defattr(0644,root,root,0755)
-%doc raine.txt
-%{_gamesdatadir}/raine/emudx
 
