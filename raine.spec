@@ -124,11 +124,13 @@ rm -f %{buildroot}%{_datadir}/applications/neoraine.desktop
 %dir %{_gamesdatadir}/raine
 %{_gamesdatadir}/raine/cheats.cfg
 %{_gamesdatadir}/raine/hiscore.dat
+%{_gamesdatadir}/raine/debug_dips.txt
 %{_gamesdatadir}/raine/bitmaps
 %{_gamesdatadir}/raine/fonts
 %{_gamesdatadir}/raine/roms
 %{_gamesdatadir}/raine/scripts
 %{_gamesdatadir}/raine/shaders
+%{_gamesdatadir}/raine/locale
 %{_iconsdir}/raine.png
 %{_miconsdir}/raine.png
 %{_liconsdir}/raine.png
