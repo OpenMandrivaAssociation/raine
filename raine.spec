@@ -97,9 +97,6 @@ make converter
 # savegame converter
 install -D -m 755 converter %{buildroot}%{_gamesbindir}/raine-savegame-converter
 
-# history
-install -D -m 644 history.dat %{buildroot}%{_gamesdatadir}/raine/history.dat
-
 # icons
 install -D -m 644 Raine48x48.png %{buildroot}%{_liconsdir}/raine.png
 install -D -m 644 Raine32X32.png %{buildroot}%{_iconsdir}/raine.png
@@ -115,10 +112,6 @@ desktop-file-install --vendor="" \
 mkdir -p %{buildroot}%{_gamesdatadir}/raine/artwork
 install -m 644 %{artwork_files} %{buildroot}%{_gamesdatadir}/raine/artwork
 
-# emudx
-install -d -m 755 %{buildroot}%{_gamesdatadir}/raine/emudx
-install -m 644 %{emudx_files} %{buildroot}%{_gamesdatadir}/raine/emudx
-
 # remove no longer needed but still installed neoraine files
 rm -f %{buildroot}%{_datadir}/pixmaps/neoraine.png
 rm -f %{buildroot}%{_datadir}/applications/neoraine.desktop
@@ -131,7 +124,6 @@ rm -f %{buildroot}%{_datadir}/applications/neoraine.desktop
 %dir %{_gamesdatadir}/raine
 %{_gamesdatadir}/raine/cheats.cfg
 %{_gamesdatadir}/raine/hiscore.dat
-%{_gamesdatadir}/raine/history.dat
 %{_gamesdatadir}/raine/bitmaps
 %{_gamesdatadir}/raine/fonts
 %{_gamesdatadir}/raine/roms
