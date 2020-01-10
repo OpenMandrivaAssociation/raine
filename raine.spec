@@ -74,7 +74,7 @@ black borders in vertical games.
 
 %prep
 %setup -q
-%apply_patches
+%autopatch -p1
 
 %setup -q -T -D -a 1 -a 2 -a 6
 7za x -y %{SOURCE7}
