@@ -12,7 +12,7 @@ Release:	1
 License:	Freeware
 #i.e: "Raine license", open-source freeware, distributable
 Group:		Emulators
-Url:		http://raine.1emulation.com/
+Url:		https://raine.1emulation.com/
 Source0:	http://raine.1emulation.com/htmlarchive/%{name}-%{version}.tar.gz
 Source1:	http://raine.1emulation.com/html/archive/icons.zip
 Source2:	http://raine.1emulation.com/html/archive/rainedocs.zip
